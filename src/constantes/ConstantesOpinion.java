@@ -23,4 +23,5 @@ public class ConstantesOpinion {
 	public static final int BORRAR_USUARIO_OPINION = 3;
 	public static final int MIN_OPCIONES_MODIFICAR = 1;
 	public static final int MAX_OPCIONES_MODIFICAR = 3;
+	public static final int MIN_CODIGO_OPINION = 1;
 }

@@ -7,6 +7,14 @@ import persistencia.Usuario;
 
 public class MetodosUsuario {
 
+	/**
+	 * Método que solicita los datos de un Usuario y lo crea.
+	 * 
+	 * @param herramienta
+	 * @param daoUsuario
+	 * @return
+	 * @throws GondolieriException
+	 */
 	public static Usuario crearUsuario(Utilidades herramienta, UsuarioDAO daoUsuario) throws GondolieriException {
 		Usuario usuarioNuevo;
 
@@ -15,6 +23,14 @@ public class MetodosUsuario {
 		return usuarioNuevo;
 	}
 
+	/**
+	 * Método que solicita los datos de un Usuario.
+	 * 
+	 * @param herramienta
+	 * @param daoUsuario
+	 * @return
+	 * @throws GondolieriException
+	 */
 	private static Usuario solicitarDatosUsuario(Utilidades herramienta, UsuarioDAO daoUsuario)
 			throws GondolieriException {
 
@@ -28,7 +44,7 @@ public class MetodosUsuario {
 		existe = daoUsuario.comprobarSiExisteUsuario(usuario);
 
 		if (existe) {
-			throw new GondolieriException("El usuario " + usuario.getNick() + " ya existe");
+			throw new GondolieriException("El usuario [" + usuario.getNick() + "] ya existe");
 		}
 		// Si no existe, sigue
 		nombre = herramienta.solicitarCadena("Introduzca su nombre: ");

@@ -77,8 +77,13 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Método que se encarga de borrar un Usuario de la base de datos.
+	 * 
+	 * @param usuarioBorrar
+	 * @throws GondolieriException
+	 */
 	public void borrarUsuario(Usuario usuarioBorrar) throws GondolieriException {
-
 		borrar(usuarioBorrar, session);
 	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

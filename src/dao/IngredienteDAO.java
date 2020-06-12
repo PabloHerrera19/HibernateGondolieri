@@ -18,11 +18,24 @@ public class IngredienteDAO extends GenericDAO<Ingrediente> {
 		this.session = session;
 	}
 
+	/**
+	 * Método que almacena un Ingrediente en la base de datos.
+	 * 
+	 * @param ingrediente a añadir.
+	 * @throws GondolieriException
+	 */
 	public void crearIngrediente(Ingrediente ingrediente) throws GondolieriException {
 		this.guardar(ingrediente, session);
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Método que a través del nombre de un Ingrediente recibido, comprueba si
+	 * existe en la base de datos.
+	 * 
+	 * @param nombreIngrediente buscado.
+	 * @return true si existe, false si no
+	 */
 	public boolean comprobarSiExisteIngrediente(String nombreIngrediente) {
 
 		boolean existe;
@@ -40,12 +53,25 @@ public class IngredienteDAO extends GenericDAO<Ingrediente> {
 
 	// AQUÍ FINALIZAN LOS MÉTODOS QUE NECESITA crearIngrediente
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Método que ejecuta una consulta a la base de datos y devuelve una lista que
+	 * contiene todos los ingredientes de la base de datos.
+	 * 
+	 * @return
+	 */
 	public List<Ingrediente> listarIngredientes() {
-		return session.createQuery("select i from Ingrediente i")
+		return session.createQuery("select i from Ingrediente i order by i.codigoIngrediente")
 				.list();
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Método que hace una consulta a la base de datos y devuelve una lista de
+	 * Ingredientes de un tipo determinado
+	 * 
+	 * @param tipoIngrediente buscado.
+	 * @return
+	 */
 	public List<Ingrediente> listarIngredientesDeUnTipo(TipoIngrediente tipoIngrediente) {
 		return session.createQuery("select i from Ingrediente i where i.tipoIngrediente=?")
 				.setString(0, tipoIngrediente.name())
@@ -53,6 +79,14 @@ public class IngredienteDAO extends GenericDAO<Ingrediente> {
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Método que, a través del nombre de ingrediente recibido, busca este
+	 * ingrediente en la base de datos y lo devuelve.
+	 * 
+	 * @param nombreIngrediente buscado.
+	 * @return Ingrediente buscado
+	 * @throws GondolieriException si el Ingrediente no existe.
+	 */
 	public Ingrediente getIngrediente(String nombreIngrediente) throws GondolieriException {
 
 		// Variables locales al método
@@ -71,6 +105,12 @@ public class IngredienteDAO extends GenericDAO<Ingrediente> {
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Método que se encarga de borrar un Ingrediente de la base de datos.
+	 * 
+	 * @param ingredienteBorrar
+	 * @throws GondolieriException
+	 */
 	public void borrarIngrediente(Ingrediente ingredienteBorrar) throws GondolieriException {
 		this.borrar(ingredienteBorrar, session);
 	}

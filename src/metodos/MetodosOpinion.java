@@ -49,6 +49,14 @@ public class MetodosOpinion {
 		return opinion;
 	}
 
+	/**
+	 * Método que se encarga de modificar una Opinion.
+	 * 
+	 * @param opinion
+	 * @param operacion
+	 * @param herramienta
+	 * @return Opinion modificada.
+	 */
 	public static Opinion modificarOpinion(Opinion opinion, int operacion, Utilidades herramienta) {
 
 		int valoracion;
@@ -87,19 +95,26 @@ public class MetodosOpinion {
 		return opinion;
 	}
 
-	public static void borrarOpinion(Utilidades herramienta, OpinionDAO daoOpinion) throws GondolieriException {
-
-		Opinion opinion;
-		int codigoOpinion;
-		char respuesta;
-
-		codigoOpinion = herramienta.solicitarEnteroPositivo("Introduzca el código de la opinión que desea borrar:");
-		opinion = daoOpinion.getOpinionPorCodigo(codigoOpinion);
-
-		respuesta = herramienta.solicitarRespuestaSiONo("¿Está seguro que desea la opinión ? " + opinion);
-		if (respuesta == ConstantesUtilidades.RESPUESTA_SI) {
-			daoOpinion.borrarOpinion(opinion);
-		}
-	}
+//	/**
+//	 * Método que se encarga de borrar una Opinion.
+//	 * 
+//	 * @param herramienta
+//	 * @param daoOpinion
+//	 * @throws GondolieriException
+//	 */
+//	public static void borrarOpinion(Utilidades herramienta, OpinionDAO daoOpinion) throws GondolieriException {
+//
+//		Opinion opinion;
+//		int codigoOpinion;
+//		char respuesta;
+//
+//		codigoOpinion = herramienta.solicitarEnteroPositivo("Introduzca el código de la opinión que desea borrar:");
+//		opinion = daoOpinion.getOpinionPorCodigo(codigoOpinion);
+//
+//		respuesta = herramienta.solicitarRespuestaSiONo("¿Está seguro que desea la opinión ? " + opinion);
+//		if (respuesta == ConstantesUtilidades.RESPUESTA_SI) {
+//			daoOpinion.borrarOpinion(opinion);
+//		}
+//	}
 
 }

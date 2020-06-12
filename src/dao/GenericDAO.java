@@ -13,7 +13,7 @@ public class GenericDAO<T> {
 	 * Método que guarda una entidad en la base de datos.
 	 * 
 	 * @param entidad a guardar.
-	 * @param session la sesión en la que accede a la base de datos.
+	 * @param session en la que accede a la base de datos.
 	 * @throws GondolieriException en caso de producirse algún fallo en las
 	 *                             validaciones de Hibernate
 	 */
@@ -49,9 +49,10 @@ public class GenericDAO<T> {
 	/**
 	 * Método que borra una entidad de la base de datos.
 	 * 
-	 * @param entidad
-	 * @param session
-	 * @throws GondolieriException
+	 * @param entidad a borrar.
+	 * @param session en la que accede a la base de datos.
+	 * @throws GondolieriException en caso de producirse algún fallo en las
+	 *                             validaciones de Hibernate
 	 */
 	public void borrar(T entidad, Session session) throws GondolieriException {
 
@@ -77,6 +78,14 @@ public class GenericDAO<T> {
 		}
 	}
 
+	/**
+	 * Método que se encarga de actualizar una entidad de la base de datos.
+	 * 
+	 * @param entidad a actualizar.
+	 * @param session en la que accede a la base de datos.
+	 * @throws GondolieriException en caso de producirse algún fallo en las
+	 *                             validaciones de Hibernate
+	 */
 	public void actualizar(T entidad, Session session) throws GondolieriException {
 
 		StringBuilder msg = new StringBuilder();

@@ -1,6 +1,5 @@
 package main;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,6 +10,15 @@ public class Utilidades<T> {
 	// OBJETOS ESTÁTICOS
 	private static Scanner teclado = new Scanner(System.in);
 
+	/**
+	 * Método que solicita y valida la entrada de un número entero en un rango de
+	 * valores.
+	 * 
+	 * @param msg
+	 * @param inicio
+	 * @param fin
+	 * @return
+	 */
 	public int solicitarEnteroEnRango(String msg, int inicio, int fin) {
 
 		int numero = 0;
@@ -34,6 +42,13 @@ public class Utilidades<T> {
 		return numero;
 	}
 
+	/**
+	 * Método que solicita y valida la entrada de un número entero positivo (mayor
+	 * que 0).
+	 * 
+	 * @param msg
+	 * @return
+	 */
 	public int solicitarEnteroPositivo(String msg) {
 		int numero = 0;
 		boolean esValido;
@@ -55,6 +70,14 @@ public class Utilidades<T> {
 		return numero;
 	}
 
+	/**
+	 * Método que solicita y valida la entrada de un decimal en un rango de valores.
+	 * 
+	 * @param msg
+	 * @param inicio
+	 * @param fin
+	 * @return
+	 */
 	public double solicitarDoubleEnRango(String msg, int inicio, int fin) {
 
 		// Variables locales al método
@@ -80,6 +103,12 @@ public class Utilidades<T> {
 		return numero;
 	}
 
+	/**
+	 * Método que solicita y valida la entrada de una cadena con contenido.
+	 * 
+	 * @param msg
+	 * @return
+	 */
 	public String solicitarCadena(String msg) {
 		String cadena;
 		do {
@@ -89,6 +118,13 @@ public class Utilidades<T> {
 		return cadena;
 	}
 
+	/**
+	 * Método que solicita y valida la entrada de una opción.
+	 * 
+	 * @param inicio
+	 * @param fin
+	 * @return
+	 */
 	public int solicitarOpcion(int inicio, int fin) {
 
 		// Variables locales al método
@@ -100,6 +136,12 @@ public class Utilidades<T> {
 		return opcion;
 	}
 
+	/**
+	 * Método que convierte un entero introducido a true o false.
+	 * 
+	 * @param disponible el número entero que convertimos.
+	 * @return
+	 */
 	public boolean solicitarBoolean(int disponible) {
 
 		boolean estado;
@@ -113,6 +155,12 @@ public class Utilidades<T> {
 		return estado;
 	}
 
+	/**
+	 * Método que solicita y valida la entrada de un carácter para que sea S o N
+	 * 
+	 * @param msg
+	 * @return
+	 */
 	public char solicitarRespuestaSiONo(String msg) {
 
 		char respuesta = 0;
@@ -142,10 +190,16 @@ public class Utilidades<T> {
 		return respuesta;
 	}
 
+	/**
+	 * Método que muestra una lista.
+	 * 
+	 * @param lista
+	 * @param msg
+	 */
 	public void mostrarLista(List<T> lista, String msg) {
 
 		int contadorElementos = 1;
-		
+
 		System.out.println(msg);
 		for (T elemento : lista) {
 			System.out.println("\t" + contadorElementos + ". " + elemento);
@@ -153,6 +207,12 @@ public class Utilidades<T> {
 		}
 	}
 
+	/**
+	 * Método que solicita y valida la entrada de un decimal positivo(mayor que 0).
+	 * 
+	 * @param msg
+	 * @return
+	 */
 	public double solicitarDoublePositivo(String msg) {
 
 		double numero = 0;

@@ -694,6 +694,29 @@ public class PrincipalGondolieri {
 //_____________________________________ USUARIOS ________________________________________
 
 	/**
+	 * Método que solicita el nick del nuevo Usuario y, si existe algún usuario con
+	 * ese nick, lo devuelve.
+	 * 
+	 * @return Usuario solicitado
+	 * @throws GondolieriException si no existe ningún Usuairo con ese nick en la
+	 *                             base de datos.
+	 */
+	private static Usuario obtenerUsuarioPorNick() throws GondolieriException {
+		Usuario usuario;
+		String nick = herramienta.solicitarCadena("Introduzca el nick del usuario:");
+		boolean existe;
+		usuario = daoUsuario.getUsuario(nick);
+		existe = daoUsuario.comprobarSiExisteUsuario(usuario);
+
+		if (!existe) {
+			throw new GondolieriException("El usuario [" + nick + "] no existe.");
+		}
+
+		return usuario;
+	}
+//_____________________________________ USUARIOS ________________________________________
+
+	/**
 	 * Método que se encarga de añadir un usuario a la base de datos.
 	 * 
 	 * @throws GondolieriException si el Usuario ya existe.
@@ -711,6 +734,13 @@ public class PrincipalGondolieri {
 	}
 //_____________________________________ USUARIOS ________________________________________
 
+	/**
+	 * Método que muestra una lista de los usuarios existentes en la base de datos.
+	 * Si no existiera ninguno, ofrece la posibilidad de crear uno nuevo.
+	 * 
+	 * @throws GondolieriException a la hora de crearlo o almacenarlo en la base de
+	 *                             datos.
+	 */
 	private static void listarTodosLosUsuarios() throws GondolieriException {
 
 		// Variables locales al método
@@ -731,23 +761,36 @@ public class PrincipalGondolieri {
 		} else {
 			herramienta.mostrarLista(listaUsuarios, "Lista de usuarios:");
 		}
-
 	}
 
 //_____________________________________ USUARIOS ________________________________________
 
+	/**
+	 * Método que se encarga de borrar un Usuario de la base de datos, actualizando
+	 * previamente las Opiniones de dicho Usuario.
+	 * 
+	 * @throws GondolieriException si el Usuario no existe en la base de datos o se
+	 *                             produce algún fallo a la hora borrarlo.
+	 */
 	private static void borrarUsuario() throws GondolieriException {
-		String nick = herramienta.solicitarCadena("Introduzca el nick del usuario que desea borrar: ");
-		Usuario usuario = daoUsuario.getUsuario(nick);
 
-		if (!daoUsuario.comprobarSiExisteUsuario(usuario)) {
-			System.err.println("El usuario " + nick + " no existe.");
-		} else {
-			System.out.println("Borrando usuario " + usuario.getNick() + "...");
-			// FALTA PONER A NULL LOS USUARIOS DE LAS PIZZAS QUE TENGAN X OPINION
-			daoUsuario.borrarUsuario(usuario);
-			System.out.println("Usuario " + usuario.getNick() + " borrado correctamente");
+		Usuario usuario = obtenerUsuarioPorNick();
+		List<Opinion> listaOpinionesUsuario = daoOpinion.listarOpinionesDeUnUsuario(usuario);
+
+		System.out.println("Borrando usuario " + usuario.getNick() + "...");
+
+		if (!listaOpinionesUsuario.isEmpty()) {
+			// Ponemos a null el usuario de las opiniones del usuario para que no de error a
+			// la hora de borrar.
+			for (Opinion opinion : listaOpinionesUsuario) {
+				opinion.setUsuario(null);
+				// Actualizamos la opinion
+				daoOpinion.actualizar(opinion, session);
+			}
 		}
+
+		daoUsuario.borrarUsuario(usuario);
+		System.out.println("Usuario [" + usuario.getNick() + "] borrado correctamente.");
 	}
 
 //___________________________________ FIN USUARIOS ______________________________________
@@ -817,100 +860,132 @@ public class PrincipalGondolieri {
 
 //_____________________________________ OPINIONES _______________________________________
 
-	private static Usuario obtenerUsuarioPorNick() {
-		Usuario usuario;
-		String nick = herramienta.solicitarCadena("Introduzca el nick del usuario:");
-		usuario = daoUsuario.getUsuario(nick);
-		return usuario;
-	}
-
-//_____________________________________ OPINIONES _______________________________________
-
+	/**
+	 * Método que se encarga de registrar una Opinion en la base de datos.
+	 * Previamente solicita el Usuario y la Pizza de la cual quiere opinar.
+	 * 
+	 * @throws GondolieriException si el Usuario o la Pizza no existen. O si se
+	 *                             produce algún fallo a la hora de almacenarla en
+	 *                             la base de datos.
+	 */
 	private static void crearOpinion() throws GondolieriException {
-		Usuario usuario;
-		Pizza pizza;
-		Opinion opinion;
+		Usuario usuario = obtenerUsuarioPorNick();
+		Pizza pizza = obtenerPizzaPorNombre();
+		Opinion opinion = MetodosOpinion.crearOpinion(usuario, pizza, herramienta);
 
 		System.out.println("Añadiendo opinión...");
-
-		usuario = obtenerUsuarioPorNick();
-		pizza = obtenerPizzaPorNombre();
-		opinion = MetodosOpinion.crearOpinion(usuario, pizza, herramienta);
-
 		daoOpinion.crearOpinion(opinion);
 
-		System.out.println("Opinión [" + opinion + "] creada correctamente.");
+		System.out.println("Opinión creada correctamente.");
 	}
 
 //_____________________________________ OPINIONES _______________________________________
+	/**
+	 * Método que muestra una lista de las Opiniones de un Usuario concreto.
+	 * 
+	 * @throws GondolieriException si el Usuario no existe.
+	 */
+	private static void listarOpinionesDeUnUsuario() throws GondolieriException {
 
-	private static void listarOpinionesDeUnUsuario() {
 		Usuario usuario = obtenerUsuarioPorNick();
 		List<Opinion> opiniones = daoOpinion.listarOpinionesDeUnUsuario(usuario);
-		herramienta.mostrarLista(opiniones, "Lista de opiniones del usuario " + usuario.getNick() + ":");
+
+		if (opiniones.isEmpty()) {
+			System.err.println("El usuario [" + usuario.getNick() + "] no tiene opiniones.");
+		} else {
+			herramienta.mostrarLista(opiniones, "Lista de opiniones del usuario " + usuario.getNick() + ":");
+		}
 	}
 
 //_____________________________________ OPINIONES _______________________________________
 
+	/**
+	 * Método que se encarga de modificar la Opinion de un Usuario concreto,
+	 * actualizándola posteriormente en la base de datos.
+	 * 
+	 * @throws GondolieriException
+	 */
 	private static void modificarOpinionDeUnUsuario() throws GondolieriException {
-		Usuario usuario;
-		List<Opinion> opiniones;
+
+		Usuario usuario = obtenerUsuarioPorNick();
+		List<Opinion> opiniones = daoOpinion.getOpinionesDeUnUsuario(usuario);
 		int codigoOpinion, operacion;
-		usuario = obtenerUsuarioPorNick();
-		opiniones = daoOpinion.getOpinionesDeUnUsuario(usuario);
+		Opinion opinion;
 
 		if (opiniones.isEmpty()) {
 			System.err.println("El usuario " + usuario.getNick() + " no tiene opiniones.");
 		} else {
+			// Muestra la lista de opiniones
 			herramienta.mostrarLista(opiniones, "Lista de opiniones del usuario " + usuario.getNick() + ":");
-			codigoOpinion = herramienta.solicitarEnteroEnRango("Escoja la opinión que desee modificar:", 1,
-					opiniones.size());
 
-			Opinion opinion = opiniones.get(codigoOpinion - 1);
-			// No se si es codigoOpinion o codigoOpinion-1. Depende de como empiece la
-			// lista.
-			// Creo que en 0
+			// Pedimos la opinión que desea modificar
+			codigoOpinion = herramienta.solicitarEnteroEnRango("Escoja la opinión que desee modificar:",
+					ConstantesOpinion.MIN_CODIGO_OPINION, opiniones.size());
+
+			// La obtenemos
+			opinion = opiniones.get(codigoOpinion - 1);
+			
 			System.out.println("¿Qué valor desea modificar?");
+			
 			operacion = herramienta.solicitarEnteroEnRango("1. Valoración.\n2. Texto.\n3. Quitar usuario.",
 					ConstantesOpinion.MIN_OPCIONES_MODIFICAR, ConstantesOpinion.MAX_OPCIONES_MODIFICAR);
 
 			opinion = MetodosOpinion.modificarOpinion(opinion, operacion, herramienta);
 
 			daoOpinion.modificarOpinion(opinion);
+			System.out.println("Opinión modificada correctamente.");
 		}
 	}
 
 //_____________________________________ OPINIONES _______________________________________
 
+	/**
+	 * Método que muestra la media de valoraciones de una Pizza concreta.
+	 * 
+	 * @throws GondolieriException si la Pizza no existe o no tiene Opiniones.
+	 */
 	private static void mostrarMediaValoracionesDeUnaPizza() throws GondolieriException {
-		Pizza pizza;
-		double mediaValoraciones;
-		pizza = daoPizza.getPizza("Introduzca el nombre de la pizza que desea consultar:");
-		mediaValoraciones = daoOpinion.getMediaValoracionesDeUnaPizza(pizza);
+		Pizza pizza = obtenerPizzaPorNombre();
+		double mediaValoraciones = daoOpinion.getMediaValoracionesDeUnaPizza(pizza);
 		// COMPROBAR EL FORMATO CON DOS DECIMALES
-		System.out.printf("La media de las valoraciones de " + pizza.getNombre() + " es %.2f", mediaValoraciones);
+		System.out.printf("La media de las valoraciones de " + pizza.getNombre() + " es %.2f\n", mediaValoraciones);
 	}
 
 //_____________________________________ OPINIONES _______________________________________
 
+	/**
+	 * Método que se encarga de borrar una Opinion de la base de datos.
+	 * 
+	 * @throws GondolieriException si el Usuario o la Opinion no existen en la base
+	 *                             de datos o se produce un error a la hora de
+	 *                             borrarla de la base de datos.
+	 */
 	private static void borrarOpinion() throws GondolieriException {
 
 		Usuario usuario = obtenerUsuarioPorNick();
 		List<Opinion> opiniones = daoOpinion.getOpinionesDeUnUsuario(usuario);
+		Opinion opinion;
 		int codigoOpinion;
 		char respuesta;
 
 		if (opiniones.isEmpty()) {
 			System.err.println("El usuario " + usuario.getNick() + " no tiene opiniones.");
 		} else {
-			herramienta.mostrarLista(opiniones, "Lista de opiniones del usuario " + usuario.getNick());
-			codigoOpinion = herramienta.solicitarEnteroEnRango("Escoja la opinión que desee borrar:", 1,
-					opiniones.size());
 
-			Opinion opinion = opiniones.get(codigoOpinion);
+			// Mostramos las opiniones de un usuario
+			herramienta.mostrarLista(opiniones, "Lista de opiniones del usuario " + usuario.getNick());
+
+			codigoOpinion = herramienta.solicitarEnteroEnRango("Escoja la opinión que desee borrar:",
+					ConstantesOpinion.MIN_CODIGO_OPINION, opiniones.size());
+
+			opinion = opiniones.get(codigoOpinion - 1);
+
+			// Solicitamos confirmación antes de borrarla
 			respuesta = herramienta.solicitarRespuestaSiONo("¿Está seguro que desea borrar la opinión ? " + opinion);
+
 			if (respuesta == ConstantesUtilidades.RESPUESTA_SI) {
 				daoOpinion.borrarOpinion(opinion);
+				System.out.println("Opinión borrada correctamente.");
 			}
 		}
 	}
