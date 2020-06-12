@@ -676,10 +676,7 @@ public class PrincipalGondolieri {
 			break;
 
 		case ConstantesOpinion.MEDIA_VALORACIONES_PIZZA:
-			pizza = daoPizza.getPizza("Introduzca el nombre de la pizza que desea consultar:");
-			mediaValoraciones = daoOpinion.getMediaValoracionesDeUnaPizza(pizza);
-			// COMPROBAR EL FORMATO CON DOS DECIMALES
-			System.out.printf("La media de las valoraciones de " + pizza.getNombre() + " es %.2f", mediaValoraciones);
+			mostrarMediaValoracionesDeUnaPizza();
 			break;
 
 		case ConstantesOpinion.BORRAR_OPINION:
@@ -755,6 +752,14 @@ public class PrincipalGondolieri {
 
 ///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+	private static void mostrarMediaValoracionesDeUnaPizza() throws GondolieriException {
+		Pizza pizza;
+		double mediaValoraciones;
+		pizza = daoPizza.getPizza("Introduzca el nombre de la pizza que desea consultar:");
+		mediaValoraciones = daoOpinion.getMediaValoracionesDeUnaPizza(pizza);
+		// COMPROBAR EL FORMATO CON DOS DECIMALES
+		System.out.printf("La media de las valoraciones de " + pizza.getNombre() + " es %.2f", mediaValoraciones);
+	}
 ///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 	private static void borrarOpinion() throws GondolieriException {
