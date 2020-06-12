@@ -41,13 +41,15 @@ public class IngredienteDAO extends GenericDAO<Ingrediente> {
 	// AQUÍ FINALIZAN LOS MÉTODOS QUE NECESITA crearIngrediente
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public List<Ingrediente> listarIngredientes() {
-		return session.createQuery("select i from Ingrediente i").list();
+		return session.createQuery("select i from Ingrediente i")
+				.list();
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public List<Ingrediente> listarIngredientesDeUnTipo(TipoIngrediente tipoIngrediente) {
 		return session.createQuery("select i from Ingrediente i where i.tipoIngrediente=?")
-				.setString(0, tipoIngrediente.name()).list();
+				.setString(0, tipoIngrediente.name())
+				.list();
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

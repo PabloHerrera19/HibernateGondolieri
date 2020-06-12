@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,7 +24,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "ingrediente")
-
 public class Ingrediente implements Serializable {
 
 	// Atributos
@@ -32,7 +33,7 @@ public class Ingrediente implements Serializable {
 
 	@Column
 	@NotBlank
-	@Size(max=10)
+	@Size(max=25)
 	private String nombre; // Bidireccional
 
 	@Enumerated(EnumType.STRING) // Guarda la cadena del enumerado
@@ -41,10 +42,12 @@ public class Ingrediente implements Serializable {
 
 	@Column
 	@NotNull
+	@Max(value = 2)
 	private double precio;
 
 	@ManyToMany(mappedBy = "ingredientes") // Nombre del set en la clase Pizza
 	@Cascade(CascadeType.SAVE_UPDATE) // Para que actualice los precios totales de las pizzas cuando se borren
+	@Valid
 	private Set<Pizza> pizzas;
 
 	// Constructor
@@ -77,7 +80,6 @@ public class Ingrediente implements Serializable {
 		return tipoIngrediente;
 	}
 
-	// hace falta el set?
 	public void setTipoIngrediente(TipoIngrediente tipoIngrediente) {
 		this.tipoIngrediente = tipoIngrediente;
 	}
@@ -91,7 +93,6 @@ public class Ingrediente implements Serializable {
 	}
 
 	public Set<Pizza> getPizzas() {
-		// iterador?
 		return pizzas;
 	}
 

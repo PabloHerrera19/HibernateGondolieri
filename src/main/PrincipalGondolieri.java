@@ -46,21 +46,22 @@ public class PrincipalGondolieri {
 		cerrarSesion();
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// MÉTODOS DE LA SESSION
+//______________________________ COMIENZO SESSION ______________________________________
+
 	private static void configurarSesion() {
 		HibernateUtil.buildSessionFactory();
 		HibernateUtil.openSessionAndBindToThread();
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
-//		session.setFlushMode(FlushMode.MANUAL);
 	}
 
+//___________________________________ SESSION ___________________________________________
 	private static void cerrarSesion() {
 		HibernateUtil.closeSessionFactory();
 	}
+//_________________________________ FIN SESSION _________________________________________
 
-	// FIN MÉTODOS SESSION
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//________________________________ COMIENZO DAOS ________________________________________
+
 	private static void inicializarDaos() {
 		daoIngrediente = new IngredienteDAO(session);
 		daoOpinion = new OpinionDAO(session);
@@ -68,17 +69,16 @@ public class PrincipalGondolieri {
 		daoUsuario = new UsuarioDAO(session);
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//___________________________________ FIN DAOS __________________________________________
+
+//___________________________ COMIENZO INICIO PROGRAMA __________________________________
 	/**
-	 * Método con el inicio del programa. Es llamado cada vez que hay que acceder al
-	 * menú principal
-	 * 
-	 * @throws GondolieriException
+	 * Método que inicia el programa. Es llamado cada vez que tiene que mostrarse el
+	 * menú principal.
 	 */
 	private static void inicioPrograma() {
 		int opcion;
 
-//		System.out.println((char) 27 + ConstantesUtilidades.ANSI_BLUE + " hola" + ConstantesUtilidades.FORMATO_RESET);
 		do {
 			opcion = mostrarMenuPrincipal();
 			tratarMenuPrincipal(opcion);
@@ -86,12 +86,20 @@ public class PrincipalGondolieri {
 		// Sale y el main cierra el programa
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// AQUÍ COMIENZAN LOS MÉTODOS RELACIONADOS CON EL MENÚ PRINCIPAL
+//______________________________ FIN INICIO PROGRAMA ____________________________________
+
+//____________________________ COMIENZO MENÚ PRINCIPAL __________________________________
+	/**
+	 * Método que muestra el menú principal y solicita el menú en el cual queremos
+	 * entrar.
+	 * 
+	 * @return menú elegido.
+	 */
 	private static int mostrarMenuPrincipal() {
 
 		// Variables locales al método
 		int opcion;
+
 		System.out.println("¿Qué menú desea visitar?");
 		System.out.println("\t1. Ingredientes.");
 		System.out.println("\t2. Pizzas.");
@@ -101,11 +109,16 @@ public class PrincipalGondolieri {
 
 		opcion = herramienta.solicitarOpcion(ConstantesMenuPrincipal.OPC_INICIAL_MENUS,
 				ConstantesMenuPrincipal.OPC_SALIR);
-		// Valida que esté en rango, pero no el numberFormat
 
 		return opcion;
 	}
 
+//_________________________________ MENÚ PRINCIPAL ______________________________________
+	/**
+	 * Método que recoge el menú al que queremos acceder y nos redirige al mismo.
+	 * 
+	 * @param opcion es el menú al que queremos acceder.
+	 */
 	private static void tratarMenuPrincipal(int opcion) {
 
 		try {
@@ -148,10 +161,15 @@ public class PrincipalGondolieri {
 			System.err.println(e.getMessage());
 		}
 	}
+//_______________________________ FIN MENÚ PRINCIPAL ____________________________________
 
-	// AQUÍ FINALIZAN LOS MÉTODOS RELACIONADOS CON EL MENÚ PRINCIPAL
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// AQUÍ COMIENZAN LOS MÉTODOS RELACIONADOS CON EL MENÚ DE INGREDIENTES
+//__________________________ COMIENZO MENÚ INGREDIENTES _________________________________
+	/**
+	 * Menú que muestra las opciones del menú de ingredientes y solicita la
+	 * operación que deseamos realizar.
+	 * 
+	 * @return operación elegida.
+	 */
 	private static int mostrarMenuIngredientes() {
 
 		// Variables locales al método
@@ -169,6 +187,14 @@ public class PrincipalGondolieri {
 		return opcion;
 	}
 
+//________________________________ MENÚ INGREDIENTES ____________________________________
+	/**
+	 * Método que, a través de la opción elegida en el menú de ingredientes, realiza
+	 * una operación concreta.
+	 * 
+	 * @param opcion elegida por el usuario.
+	 * @throws GondolieriException.
+	 */
 	private static void tratarMenuIngredientes(int opcion) throws GondolieriException {
 
 		switch (opcion) {
@@ -191,14 +217,16 @@ public class PrincipalGondolieri {
 		}
 
 	}
+//______________________________ FIN MENÚ INGREDIENTES __________________________________
 
-///////////////////////////           INGREDIENTES            //////////////////////////////////////
-	/*
+//______________________________ COMIENZO INGREDIENTES __________________________________
+
+	/**
 	 * Método que crea un ingrediente pidiendo todos sus datos y lo almacena en la
 	 * base de datos. Si existiera un error al almacenarlo, hace un rollback para
 	 * deshacer los cambios.
 	 * 
-	 * @throws GondolieriException a la hora de pedir los datos.
+	 * @throws GondolieriException a la hora de pedir los datos o guardarlos.
 	 */
 	private static void addIngrediente() throws GondolieriException {
 
@@ -213,6 +241,7 @@ public class PrincipalGondolieri {
 		System.out.println("Ingrediente " + ingrediente.getNombre() + " creado correctamente");
 	}
 
+//__________________________________ INGREDIENTES _______________________________________
 	/**
 	 * Método que muestra una lista con todos los ingredientes de la base de datos.
 	 * Además, si ésta está vacía, le ofrece al usuario la posibilidad de crearla.
@@ -241,6 +270,7 @@ public class PrincipalGondolieri {
 			herramienta.mostrarLista(listaIngredientes, "Lista de todos los ingredientes:");
 		}
 	}
+//__________________________________ INGREDIENTES _______________________________________
 
 	/**
 	 * Método que muestra una lista de ingredientes de un tipo concreto.
@@ -262,6 +292,8 @@ public class PrincipalGondolieri {
 		}
 	}
 
+//__________________________________ INGREDIENTES _______________________________________
+
 	/**
 	 * Método que borra un ingrediente de la base de datos, borrándolo previamente
 	 * de todas sus pizzas y actualizando el precio de las mismas.
@@ -271,11 +303,8 @@ public class PrincipalGondolieri {
 	private static void borrarIngrediente() throws GondolieriException {
 
 		// Variables locales al método
-		Ingrediente ingrediente;
-		String nombreIngrediente;
+		Ingrediente ingrediente = obtenerIngredientePorNombre();
 		char respuesta;
-
-		ingrediente = obtenerIngredientePorNombre();
 
 		// Solicitamos la confirmación al usuario.
 		respuesta = herramienta.solicitarRespuestaSiONo("¿Está seguro de que desea borrar el ingrediente "
@@ -287,7 +316,8 @@ public class PrincipalGondolieri {
 			List<Pizza> pizzasQueContienenIngrediente = daoPizza.listarPizzasQueContienenUnIngrediente(ingrediente);
 
 			if (!pizzasQueContienenIngrediente.isEmpty()) {
-				// Si el ingrediente está en alguna pizza, lo borramos de esta antes
+
+				// Si el ingrediente está en alguna pizza, lo borramos de ésta antes
 				for (Pizza pizza : pizzasQueContienenIngrediente) {
 					if (pizza.getIngredientes().contains(ingrediente)) {
 						pizza.getIngredientes().remove(ingrediente);
@@ -301,6 +331,14 @@ public class PrincipalGondolieri {
 		}
 	}
 
+//__________________________________ INGREDIENTES _______________________________________
+	/**
+	 * Método que obtiene un Ingrediente a través del nombre que le solicita al
+	 * usuario.
+	 * 
+	 * @return Ingrediente creado
+	 * @throws GondolieriException si el Ingrediente ya existe.
+	 */
 	private static Ingrediente obtenerIngredientePorNombre() throws GondolieriException {
 
 		String nombreIngrediente;
@@ -312,9 +350,15 @@ public class PrincipalGondolieri {
 		return ingrediente;
 	}
 
-	// AQUÍ FINALIZAN LOS MÉTODOS RELACIONADOS CON EL MENÚ DE INGREDIENTES
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// AQUÍ COMIENZAN LOS MÉTODOS RELACIONADOS CON EL MENÚ DE PIZZAS
+//________________________________ FIN INGREDIENTES _____________________________________
+
+//______________________________ COMIENZO MENÚ PIZZAS ___________________________________
+	/**
+	 * Menú que muestra las opciones del menú de pizzas y solicita la operación que
+	 * deseamos realizar.
+	 * 
+	 * @return operación elegida.
+	 */
 	private static int mostrarMenuPizzas() {
 
 		// Variables locales al método
@@ -337,6 +381,15 @@ public class PrincipalGondolieri {
 		return opcion;
 	}
 
+//__________________________________ MENÚ PIZZAS ________________________________________
+
+	/**
+	 * Método que, a través de la opción elegida en el menú de pizzas, realiza una
+	 * operación concreta.
+	 * 
+	 * @param opcion elegida por el usuario.
+	 * @throws GondolieriException.
+	 */
 	private static void tratarMenuPizzas(int opcion) throws GondolieriException {
 
 		switch (opcion) {
@@ -375,8 +428,14 @@ public class PrincipalGondolieri {
 			break;
 		}
 	}
+//_________________________________ FIN MENÚ PIZZAS _____________________________________
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que crea una Pizza y la almacena en la base de datos.
+	 * 
+	 * @throws GondolieriException si ya existe la Pizza.
+	 */
 	private static void addPizza() throws GondolieriException {
 
 		// Variables locales al método
@@ -389,7 +448,14 @@ public class PrincipalGondolieri {
 		System.out.println("Pizza  " + pizza.getNombre() + " creado correctamente");
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que añade un Ingrediente a una Pizza, actualizando el precioTotal de
+	 * ésta y actualizándola posteriormente en la base de datos.
+	 * 
+	 * @throws GondolieriException si el Ingrediente o la Pizza no existen o no ha
+	 *                             podido añadirse.
+	 */
 	private static void addIngredienteAPizza() throws GondolieriException {
 
 		Ingrediente ingrediente = obtenerIngredientePorNombre();
@@ -410,7 +476,14 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que borra un Ingrediente de una Pizza, actualizando su precioTotal y
+	 * actualizándola posteriormente en la base de datos.
+	 * 
+	 * @throws GondolieriException si el Ingrediente o la Pizza no existen o no ha
+	 *                             podido añadirse.
+	 */
 	private static void borrarIngredienteDeUnaPizza() throws GondolieriException {
 		//
 		Ingrediente ingredienteBorrar = obtenerIngredientePorNombre();
@@ -447,7 +520,11 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que muestra una lista de Pizzas con un precioTotal menor a uno
+	 * solicitado al usuario.
+	 */
 	private static void listarPizzasConPrecioMenorAIntroducido() {
 		double precio = herramienta.solicitarDoublePositivo("Introduzca el precio límite para su consulta: ");
 		List<Pizza> listadoDePizzasConPrecioMenorAIntroducido = daoPizza.listarPizzasConPrecioMenorAIntroducido(precio);
@@ -460,10 +537,14 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que muestra la lista de Ingredientes que tiene una Pizza concreta.
+	 * 
+	 * @throws GondolieriException si la Pizza no existe.
+	 */
 	private static void listarIngredientesDeUnaPizza() throws GondolieriException {
-		Pizza pizza;
-		pizza = obtenerPizzaPorNombre();
+		Pizza pizza = obtenerPizzaPorNombre();
 
 		List<Pizza> listadoPizzasEIngredientes = daoPizza.listadoPizzaEIngredientes(pizza);
 
@@ -474,7 +555,12 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que muestra una lista de Pizzas que contienen un Ingrediente concreto.
+	 * 
+	 * @throws GondolieriException si el Ingrediente o la Pizza no existen.
+	 */
 	private static void listarPizzasQueContienenUnIngrediente() throws GondolieriException {
 
 		Ingrediente ingrediente = obtenerIngredientePorNombre();
@@ -490,7 +576,10 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que muestra una lista de Pizzas disponibles.
+	 */
 	private static void listarPizzasDisponibles() {
 
 		List<Pizza> listaPizzasDisponibles = daoPizza.listadoPizzasDisponibles();
@@ -502,12 +591,17 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que se encarga de actualizar el estado de una Pizza(disponible/no
+	 * disponible) y la actualiza posteriormente en la base de datos.
+	 * 
+	 * @throws GondolieriException si no existe la Pizza o ha habido algún error al
+	 *                             actualizarla.
+	 */
 	private static void actualizarEstadoPizza() throws GondolieriException {
 
-		Pizza pizza;
-
-		pizza = obtenerPizzaPorNombre();
+		Pizza pizza = obtenerPizzaPorNombre();
 		pizza.setDisponible(!pizza.isDisponible());
 
 		daoPizza.actualizarEstadoPizza(pizza);
@@ -515,14 +609,26 @@ public class PrincipalGondolieri {
 		System.out.println("El estado de [" + pizza.getNombre() + "] ha sido actualizado correctamente.");
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que se encarga de borrar una Pizza.
+	 * 
+	 * @throws GondolieriException si la Pizza no existe o si hay algún problema al
+	 *                             almacenarla en la base de datos.
+	 */
 	private static void borrarPizza() throws GondolieriException {
 		Pizza pizza = obtenerPizzaPorNombre();
 		daoPizza.borrarPizza(pizza);
 		System.out.println("Pizza [" + pizza.getNombre() + "] borrada correctamente.");
 	}
 
-///////////////////////////////////           PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ PIZZAS __________________________________________
+	/**
+	 * Método que solicita el nombre de una Pizza y, si existe, la devuelve.
+	 * 
+	 * @return Pizza solicitada.
+	 * @throws GondolieriException si la Pizza no existe.
+	 */
 	private static Pizza obtenerPizzaPorNombre() throws GondolieriException {
 
 		Pizza pizza;
@@ -534,10 +640,15 @@ public class PrincipalGondolieri {
 		return pizza;
 	}
 
-///////////////////////////////////          FIN PIZZAS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//___________________________________ FIN PIZZAS ________________________________________
 
-////////////////////////////////          COMIENZO USUARIOS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-	// AQUÍ COMIENZAN LOS MÉTODOS RELACIONADOS CON EL MENÚ DE USUARIOSS
+//______________________________ COMIENZO MENÚ USUARIOS _________________________________
+	/**
+	 * Menú que muestra las opciones del menú de usuarios y solicita la operación
+	 * que deseamos realizar.
+	 * 
+	 * @return operación elegida.
+	 */
 	private static int mostrarMenuUsuarios() {
 		int opcion;
 
@@ -554,7 +665,14 @@ public class PrincipalGondolieri {
 
 	}
 
-///////////////////////////////////           USUARIOS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_________________________________ MENÚ USUARIOS _______________________________________
+	/**
+	 * Método que, a través de la opción elegida en el menú de usuarios, realiza una
+	 * operación concreta.
+	 * 
+	 * @param opcion elegida por el usuario.
+	 * @throws GondolieriException.
+	 */
 	private static void tratarMenuUsuarios(int opcion) throws GondolieriException {
 
 		switch (opcion) {
@@ -570,7 +688,10 @@ public class PrincipalGondolieri {
 			break;
 		}
 	}
-///////////////////////////////////           USUARIOS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+//________________________________ FIN MENÚ USUARIOS ____________________________________
+
+//_____________________________________ USUARIOS ________________________________________
 
 	/**
 	 * Método que se encarga de añadir un usuario a la base de datos.
@@ -588,7 +709,7 @@ public class PrincipalGondolieri {
 
 		System.out.println("Usuario  " + usuarioNuevo.getNick() + " creado correctamente");
 	}
-///////////////////////////////////           USUARIOS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ USUARIOS ________________________________________
 
 	private static void listarTodosLosUsuarios() throws GondolieriException {
 
@@ -613,7 +734,7 @@ public class PrincipalGondolieri {
 
 	}
 
-///////////////////////////////////           USUARIOS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ USUARIOS ________________________________________
 
 	private static void borrarUsuario() throws GondolieriException {
 		String nick = herramienta.solicitarCadena("Introduzca el nick del usuario que desea borrar: ");
@@ -629,10 +750,16 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////          FIN USUARIOS            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//___________________________________ FIN USUARIOS ______________________________________
 
-//////////////////////////////////        COMIENZO OPINIONES          \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//______________________________ COMIENZO MENÚ OPINIONES ________________________________
 
+	/**
+	 * Menú que muestra las opciones del menú de opiniones y solicita la operación
+	 * que deseamos realizar.
+	 * 
+	 * @return operación elegida.
+	 */
 	private static int mostrarMenuOpiniones() {
 
 		// Variables locales al método
@@ -651,16 +778,17 @@ public class PrincipalGondolieri {
 
 		return opcion;
 	}
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+//___________________________________ MENÚ OPINIONES ____________________________________
+
+	/**
+	 * Método que, a través de la opción elegida en el menú de opiniones, realiza
+	 * una operación concreta.
+	 * 
+	 * @param opcion elegida por el usuario.
+	 * @throws GondolieriException.
+	 */
 	private static void tratarMenuOpiniones(int opcion) throws GondolieriException {
-		// Variables locales al método
-		Usuario usuario;
-		Pizza pizza;
-		List<Opinion> opiniones;
-		double mediaValoraciones;
-		int codigoOpinion;
-		char respuesta;
 
 		switch (opcion) {
 		case ConstantesOpinion.ADD_OPINION:
@@ -685,7 +813,9 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_________________________________ FIN MENÚ OPINIONES __________________________________
+
+//_____________________________________ OPINIONES _______________________________________
 
 	private static Usuario obtenerUsuarioPorNick() {
 		Usuario usuario;
@@ -694,7 +824,7 @@ public class PrincipalGondolieri {
 		return usuario;
 	}
 
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ OPINIONES _______________________________________
 
 	private static void crearOpinion() throws GondolieriException {
 		Usuario usuario;
@@ -712,7 +842,7 @@ public class PrincipalGondolieri {
 		System.out.println("Opinión [" + opinion + "] creada correctamente.");
 	}
 
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ OPINIONES _______________________________________
 
 	private static void listarOpinionesDeUnUsuario() {
 		Usuario usuario = obtenerUsuarioPorNick();
@@ -720,7 +850,7 @@ public class PrincipalGondolieri {
 		herramienta.mostrarLista(opiniones, "Lista de opiniones del usuario " + usuario.getNick() + ":");
 	}
 
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ OPINIONES _______________________________________
 
 	private static void modificarOpinionDeUnUsuario() throws GondolieriException {
 		Usuario usuario;
@@ -750,7 +880,7 @@ public class PrincipalGondolieri {
 		}
 	}
 
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//_____________________________________ OPINIONES _______________________________________
 
 	private static void mostrarMediaValoracionesDeUnaPizza() throws GondolieriException {
 		Pizza pizza;
@@ -760,7 +890,8 @@ public class PrincipalGondolieri {
 		// COMPROBAR EL FORMATO CON DOS DECIMALES
 		System.out.printf("La media de las valoraciones de " + pizza.getNombre() + " es %.2f", mediaValoraciones);
 	}
-///////////////////////////////////           OPINIONES            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+//_____________________________________ OPINIONES _______________________________________
 
 	private static void borrarOpinion() throws GondolieriException {
 
