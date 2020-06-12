@@ -26,7 +26,7 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 	 * Método que devuelve una lista con todos los usuarios de la base de datos
 	 * ordenados alfabéticamente por nick.
 	 * 
-	 * @return List<Usuario> con todos los usuarios.
+	 * @return lista de Usuario con todos los usuarios de la base de datos.
 	 */
 	public List<Usuario> listarUsuarios() {
 		return session.createQuery("select u from Usuario u order by u.nick asc").list();

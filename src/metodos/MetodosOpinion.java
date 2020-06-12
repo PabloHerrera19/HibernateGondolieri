@@ -28,7 +28,6 @@ public class MetodosOpinion {
 	 * @param pizza       sobre la que se opina.
 	 * @param herramienta para solicitar los datos necesarios.
 	 * @return Opinion creada.
-	 * @throws GondolieriException
 	 */
 	public static Opinion crearOpinion(Usuario usuario, Pizza pizza, Utilidades herramienta) {
 		Opinion opinion;
